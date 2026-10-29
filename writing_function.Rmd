@@ -3,3 +3,108 @@ title: "writing_function"
 output: github_document
 ---
 
+```{r}
+library(tidyverse)
+library(rvest)
+library(readxl)
+set.seed(1)
+```
+
+## Functions!
+
+start small with Z scores
+```{r}
+x_vec = rnorm(n = 40, mean = 12, sd = 63)
+
+(x_vec - mean(x_vec)) / sd(x_vec)
+```
+
+turn it into function
+
+```{r}
+
+z_scores = function(x) {
+  
+  if (!is.numeric(x)){
+    stop("Input x must be numeric.")
+  } else if (length(x) < 5) {
+    stop("x should have more than 5 numbers")
+  }
+  z = (x - mean(x)) / sd(x)
+  
+  return(z)
+  
+}
+
+z_scores(x_vec)
+z_scores(rpois(4000, lambda = 12))
+```
+
+does it actually work?
+
+```{r eval = FALSE}
+#below do not work
+z_scores(iris)
+z_scores("English")
+z_scores(c(TRUE, TRUE, FALSE, FALSE))
+z_scores(3)
+```
+
+
+## Mean and sd
+
+```{r}
+mean(x_vec)
+sd(x_vec)
+```
+
+write a func that returns mean and sd of an input vector
+
+```{r}
+mean_and_sd = function(x){
+  
+  return_df = 
+    tibble(
+      mean = mean(x),
+      sd = sd(x)
+    )
+  return(return_df)
+}
+```
+
+check if it works
+
+```{r}
+source("source/mean_and_sd.R")
+```
+
+```{r}
+mean_and_sd(x_vec)
+```
+
+## Motivate and write another one
+
+```{r}
+sim_df =
+  tibble(
+    x = rnorm(40, 12, 3)
+  )
+
+sim_df |>
+  summarize(
+    mean = mean(x),
+    sd = sd(x)
+  )
+```
+
+```{r}
+source("source/sim_mean_and_sd.R")
+```
+
+```{r}
+sim_mean_sd(40,12,3)
+
+#参数可在func提前定义
+```
+
+
