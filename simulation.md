@@ -135,3 +135,81 @@ sim_results_df |>
     ## 2 n = 60     12.0  0.391
     ## 3 n = 120    12.0  0.267
     ## 4 n = 240    12.0  0.187
+
+## SLR
+
+generate once
+
+``` r
+sim_data = 
+  tibble(
+    x = rnorm(30,1,1),
+    y = 2 + 3 * x + rnorm(30,0,1)
+  )
+sim_data |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+    ## `geom_smooth()` using formula = 'y ~ x'
+
+![](simulation_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+``` r
+fit = lm(y ~x, data = sim_data)
+
+fit
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = y ~ x, data = sim_data)
+    ## 
+    ## Coefficients:
+    ## (Intercept)            x  
+    ##       1.713        3.139
+
+turn it into a function
+
+``` r
+source("source/sim_slr.R")
+sim_slr(30)
+```
+
+    ## # A tibble: 1 × 2
+    ##   beta0_hat beta1_hat
+    ##       <dbl>     <dbl>
+    ## 1      2.26      2.89
+
+``` r
+slr_results_df = 
+  tibble(
+    samp_size = rep(30,1000)
+  ) |>
+  mutate(
+    est_df = map(samp_size, sim_slr)
+  ) |>
+  unnest(est_df)
+```
+
+``` r
+slr_results_df |>
+  summarize(
+    b0_mean = mean(beta0_hat),
+    b0_se = sd(beta0_hat)
+  )
+```
+
+    ## # A tibble: 1 × 2
+    ##   b0_mean b0_se
+    ##     <dbl> <dbl>
+    ## 1    2.01 0.266
+
+``` r
+slr_results_df |>
+  ggplot(aes(x = beta0_hat)) +
+  geom_density()
+```
+
+![](simulation_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
