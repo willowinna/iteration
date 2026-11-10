@@ -8,7 +8,7 @@
 #'
 #' @returns dataframe with mean and sd
 
-sim_mean_sd = function(n_obs, mu, sigma) {
+sim_mean_sd = function(n_obs, mu = 12, sigma = 3) {
   
   sim_df =
     tibble(
