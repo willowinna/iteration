@@ -155,4 +155,33 @@ slr_results_df |>
   geom_density()
 ```
 
+## birthday problem
+
+```{r}
+birthdays = sample(1:365, size = 5, replace = TRUE)
+
+repeated_birthdays = length(unique(birthdays)) < 5
+```
+
+```{r}
+source("source/birthday_repeated.R")
+
+birthday_results_df = 
+  expand_grid(
+    number_of_people = 5:50,
+    iter = 1:1000
+  )|>
+  mutate(
+    repeated = map_lgl(number_of_people,birthday_repeated)
+    )
+```
+
+```{r}
+birthday_results_df |>
+  group_by(number_of_people) |>
+  summarize(prob_of_repeated = mean(repeated)) |>
+  ggplot(aes(x = number_of_people, y = prob_of_repeated)) +
+  geom_point() +
+  geom_line()
+```
 
